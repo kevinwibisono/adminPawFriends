@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Bukti Transfer</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Menu CSS -->
+    <link href="/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <!-- toast CSS -->
+    <link href="/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet">
+    <!-- morris CSS -->
+    <link href="/plugins/bower_components/morrisjs/morris.css" rel="stylesheet">
+    <!-- chartist CSS -->
+    <link href="/plugins/bower_components/chartist-js/dist/chartist.min.css" rel="stylesheet">
+    <link href="/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css" rel="stylesheet">
+    <!-- animation CSS -->
+    <link href="/css/animate.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    <!-- color CSS -->
+    <link href="/css/colors/default.css" id="theme" rel="stylesheet">
+</head>
+<body class="fix-header">
+    <div id="wrapper">
+        <!--SIDEBAR-->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav slimscrollsidebar">
+                <ul class="nav" id="side-menu">
+                    <li style="padding: 70px 0 0;">
+                        <a href="https://pawfriends-admin.herokuapp.com/dashboard" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="https://pawfriends-admin.herokuapp.com/route/artikel/listArtikel" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Artikel</a>
+                    </li>
+                    <li>
+                        <a href="https://pawfriends-admin.herokuapp.com/route/penarikan/listPenarikan" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i>Penarikan Saldo</a>
+                    </li>
+
+                </ul>
+            </div>
+            
+        </div>
+
+        <div id="page-wrapper" style="margin-top: 0;">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">Upload Bukti Transfer</h4></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="white-box">
+                            <form class="form-horizontal form-material" id="formPenarikan" enctype="multipart/form-data" action="https://pawfriends-admin.herokuapp.com/route/penarikan/uploadBuktiTrf" method="POST">
+                                <div class="form-group">
+                                    <input type="hidden" value="<%- penarikan == null ? '' : penarikan.id %>" name="id">
+                                    <label class="col-md-12">Gambar Bukti Transfer</label>
+                                    <div class="col-md-12">
+                                        <img id="penarikanPic" style="width: 400px; height: 400px; cursor: pointer;" src="<%- penarikan.bukti == '' ? '/uploadimg.jpg' : penarikan.bukti%>" onclick="pickPicture()">
+                                        <input type="file" onchange="previewPicture(event)" id="penarikanAddGambar" name="gambar" style="display: none;"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Diajukan Tanggal</label>
+                                    <div class="col-md-12">
+                                        <%= penarikan.tanggal %> </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-12">Nama Pengaju</label>
+                                    <div class="col-md-12">
+                                        <%= penarikan.nama %> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Jenis Rekening Tujuan</label>
+                                    <div class="col-md-12">
+                                        <%= penarikan.jenis_rek %> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Nomor Rekening Tujuan</label>
+                                    <div class="col-md-12">
+                                        <%= penarikan.no_rek %> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Rekening Atas Nama</label>
+                                    <div class="col-md-12">
+                                        <%= penarikan.nama_rek %> </div>
+                                </div>
+
+                                <h2 style="color: red; margin-bottom: 20px;" id="errorPenarikan"></h2>
+                                
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <button type="submit" class="btn btn-success">Upload Bukti Transfer</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+
+            $("#formPenarikan").submit(function(event){
+                if($("#penarikanPic").attr("src") == '/uploadimg.jpg'){
+                    $("#errorPenarikan").html("Gambar Harus Disertakan");
+                    event.preventDefault();
+                }
+            });
+
+        });
+        
+        function pickPicture(){
+            $("#penarikanAddGambar").click();
+        }
+
+        function previewPicture(event){
+            if(event.target.files && event.target.files[0]){
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#penarikanPic").attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

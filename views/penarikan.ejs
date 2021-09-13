@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Penarikan</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Menu CSS -->
+    <link href="/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <!-- toast CSS -->
+    <link href="/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet">
+    <!-- morris CSS -->
+    <link href="/plugins/bower_components/morrisjs/morris.css" rel="stylesheet">
+    <!-- chartist CSS -->
+    <link href="/plugins/bower_components/chartist-js/dist/chartist.min.css" rel="stylesheet">
+    <link href="/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css" rel="stylesheet">
+    <!-- animation CSS -->
+    <link href="/css/animate.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    <!-- color CSS -->
+    <link href="/css/colors/default.css" id="theme" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <style>
+        .sorting::after{display: none;}
+        
+        .sorting_desc::after{display: none;}
+        
+        .sorting_asc::after{display: none;}
+    </style>
+</head>
+<body class="fix-header">
+    <div id="wrapper">
+        <!--SIDEBAR-->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav slimscrollsidebar">
+                <ul class="nav" id="side-menu">
+                    <li style="padding: 70px 0 0;">
+                        <a href="https://pawfriends-admin.herokuapp.com/dashboard" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="https://pawfriends-admin.herokuapp.com/route/artikel/listArtikel" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Artikel</a>
+                    </li>
+                    <li>
+                        <a href="https://pawfriends-admin.herokuapp.com/route/penarikan/listPenarikan" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i>Penarikan Saldo</a>
+                    </li>
+
+                </ul>
+            </div>
+            
+        </div>
+
+        <div id="page-wrapper" style="margin-top: 0;">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">Penarikan Diajukan</h4> </div>
+                </div>
+
+                <button style="background-color: black; color: white; border: none; border-radius: 5px; width: 150px; height: 25px; margin-bottom: 10px; margin-right: 20px;" onclick="filterNotReturned()">Belum Disetujui</button>
+                <button style="background-color: black; color: white; border: none; border-radius: 5px; width: 70px; height: 25px; margin-bottom: 10px;" onclick="filterReturned()">Disetujui</button>
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 col-sm-12">
+                        <div class="white-box">
+                            <h3 class="box-title">Penarikan Diajukan</h3>
+                            <div class="table-responsive">
+                                <table id="artikelTable" class="display">
+
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th style="text-align: center;">AKSI</th>
+                                            <th>PENGAJU</th>
+                                            <th>JENIS REK</th>
+                                            <th>TANGGAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(var i = 0; i < saldoTarikList.length ; i++){ %>
+                                            <tr>
+                                                <td><%=i+1%></td>
+                                                <td style="text-align: center;">
+                                                    <button class="btn btn-success" onclick="toUpdate('<%=saldoTarikList[i].id%>')">Upload Bukti</button>
+                                                </td>
+                                                <td><%=saldoTarikList[i].nama %></td>
+                                                <td><%=saldoTarikList[i].jenis_rek %></td>
+                                                <td><%=saldoTarikList[i].tanggal %></td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+
+            $('#artikelTable').DataTable({
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+            });
+
+        });
+        
+        function filterNotReturned(){
+            window.location.href = "https://pawfriends-admin.herokuapp.com/route/penarikan/listPenarikan";
+        }
+
+        function filterReturned(){
+            window.location.href = "https://pawfriends-admin.herokuapp.com/route/penarikan/listPenarikan?bukti=true";
+        }
+
+        function toUpdate(id){
+            window.location.href = "https://pawfriends-admin.herokuapp.com/route/penarikan/toPenarikanDetail/"+id;
+        }
+    </script>
+</body>
+</html>

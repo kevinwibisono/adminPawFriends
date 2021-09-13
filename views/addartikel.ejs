@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artikel</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Menu CSS -->
+    <link href="/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <!-- toast CSS -->
+    <link href="/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet">
+    <!-- morris CSS -->
+    <link href="/plugins/bower_components/morrisjs/morris.css" rel="stylesheet">
+    <!-- chartist CSS -->
+    <link href="/plugins/bower_components/chartist-js/dist/chartist.min.css" rel="stylesheet">
+    <link href="/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css" rel="stylesheet">
+    <!-- animation CSS -->
+    <link href="/css/animate.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    <!-- color CSS -->
+    <link href="/css/colors/default.css" id="theme" rel="stylesheet">
+    <style>
+        input[type=checkbox]{
+            vertical-align: middle;
+            position: relative;
+            bottom: 1px;
+        }
+    </style>
+</head>
+<body class="fix-header">
+    <div id="wrapper">
+        <!--SIDEBAR-->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav slimscrollsidebar">
+                <ul class="nav" id="side-menu">
+                    <li style="padding: 70px 0 0;">
+                        <a href="https://pawfriends-admin.herokuapp.com/dashboard" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="https://pawfriends-admin.herokuapp.com/route/artikel/listArtikel" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Artikel</a>
+                    </li>
+                    <li>
+                        <a href="https://pawfriends-admin.herokuapp.com/route/penarikan/listPenarikan" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i>Penarikan Saldo</a>
+                    </li>
+
+                </ul>
+            </div>
+            
+        </div>
+
+        <div id="page-wrapper" style="margin-top: 0;">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title"><%- artikel == null ? 'Tambah Artikel' : 'Ubah artikel' %></h4></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="white-box">
+                            <form class="form-horizontal form-material" id="formArtikel" enctype="multipart/form-data" action="<%- artikel == null ? 'https://pawfriends-admin.herokuapp.com/route/artikel/addArtikel' : 'https://pawfriends-admin.herokuapp.com/route/artikel/updateArtikel/' %>" method="POST">
+                                <input type="hidden" value="<%- artikel == null ? '' : artikel.id %>" name="id">
+                                <div class="form-group">
+                                    <label class="col-md-12">Gambar Artikel</label>
+                                    <div class="col-md-12">
+                                        <img id="artikelPic" style="width: 600px; height: 400px; cursor: pointer;" src="<%- artikel == null ? '/uploadimghorizontal.png' : artikel.gambar%>" onclick="pickPicture()">
+                                        <input type="file" onchange="previewPicture(event)" id="artikelAddGambar" name="gambar" style="display: none;"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Judul Artikel</label>
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="Judul Artikel" name="judul" id="artikelJudul"
+                                            class="form-control form-control-line" value="<%- artikel == null ? '' : artikel.judul %>"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Isi Artikel</label>
+                                    <div class="col-md-12">
+                                        <textarea rows="10" id="artikelIsi" class="form-control form-control-line" name="isi"><%- artikel == null ? '' : artikel.isi %></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Nama Penulis</label>
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="Nama Penulis" name="penulis" id="artikelPenulis"
+                                            class="form-control form-control-line" value="<%- artikel == null ? '' : artikel.penulis %>"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="example-email" class="col-md-12">Link Artikel</label>
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="Link Artikel" id="artikelLink"
+                                            class="form-control form-control-line" name="link" value="<%- artikel == null ? '' : artikel.link %>"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12">Kategori</label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control form-control-line" name="kategori">
+                                            <option value="0" <%- artikel == null ? '' : artikel.kategori == 0 ? 'selected' : '' %>>Informasi</option>
+                                            <option value="1" <%- artikel == null ? '' : artikel.kategori == 1 ? 'selected' : '' %>>Tips & Trik</option>
+                                            <option value="2" <%- artikel == null ? '' : artikel.kategori == 2 ? 'selected' : '' %>>Acara</option>
+                                            <option value="3" <%- artikel == null ? '' : artikel.kategori == 3 ? 'selected' : '' %>>Komunitas</option>
+                                            <option value="4" <%- artikel == null ? '' : artikel.kategori == 4 ? 'selected' : '' %>>Peristiwa</option>
+                                            <option value="5" <%- artikel == null ? '' : artikel.kategori == 5 ? 'selected' : '' %>>Cerita Pemilik</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12">Target Pembaca</label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control form-control-line" name="target">
+                                            <option value="0" <%- artikel == null ? '' : artikel.reader == 0 ? 'selected' : '' %>>Semua Pemilik</option>
+                                            <option value="1" <%- artikel == null ? '' : artikel.reader == 1 ? 'selected' : '' %>>Pemilik Baru</option>
+                                            <option value="2" <%- artikel == null ? '' : artikel.reader == 2 ? 'selected' : '' %>>Pemilik Berpengalaman</option>
+                                        </select>
+                                    </div>
+                                </div>
+        
+                                <div class="form-group">
+                                    <label class="col-sm-12">Topik Hewan Peliharaan</label>
+                                    <div class="col-sm-12">
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('0') ? 'checked' : '' %> name="topik_anjing" value="true"> 
+                                            Anjing</label>
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('1') ? 'checked' : '' %> name="topik_kucing" value="true"> 
+                                            Kucing</label>
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('2') ? 'checked' : '' %> name="topik_kelinci" value="true"> 
+                                            Kelinci</label>
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('3') ? 'checked' : '' %> name="topik_burung" value="true"> 
+                                            Burung</label>
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('4') ? 'checked' : '' %> name="topik_ikan" value="true"> 
+                                            Ikan</label>
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('5') ? 'checked' : '' %> name="topik_hamster" value="true"> 
+                                            Hamster</label>
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('6') ? 'checked' : '' %> name="topik_reptil" value="true"> 
+                                            Reptil</label>
+                                        <label style="margin-left: 30px;">
+                                            <input type="checkbox" class="topik_hewan" <%- artikel == null ? '' : artikel.topik.includes('7') ? 'checked' : '' %> name="topik_lainnya" value="true"> 
+                                            Lainnya</label>
+                                    </div>
+                                </div>
+
+                                <h2 style="color: red; margin-bottom: 20px;" id="errorArtikel"></h2>
+                                
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <button type="submit" class="btn btn-success"><%- artikel == null ? 'Tambah Artikel' : 'Ubah artikel' %></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+
+            $('#artikelTable').DataTable({
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+            });
+
+            $("#formArtikel").submit(function(event){
+                if($("#artikelPic").attr("src") == '/uploadimghorizontal.png'){
+                    $("#errorArtikel").html("Gambar Harus Disertakan");
+                    event.preventDefault();
+                }
+                else if($("#artikelJudul").val() == '' || $("#artikelIsi").val() == '' || $("#artikelPenulis").val() == '' || $("#artikelLink").val() == ''){
+                    $("#errorArtikel").html("Semua Isian Tidak Boleh Kosong");
+                    event.preventDefault();
+                }
+                else{
+                    var topikValid = false;
+                    var checkboxes = $(".topik_hewan");
+                    for (var i=0;i<8;i++) {
+                        if(checkboxes.eq(i).is(":checked")){
+                            topikValid = true;
+                        }
+                    }
+                    if(topikValid == false){
+                        $("#errorArtikel").html("Minimal 1 Topik Hewan Harus Dipilih");
+                        event.preventDefault();
+                    }
+                }
+            });
+
+        });
+        
+        function pickPicture(){
+            $("#artikelAddGambar").click();
+        }
+
+        function previewPicture(event){
+            if(event.target.files && event.target.files[0]){
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#artikelPic").attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
