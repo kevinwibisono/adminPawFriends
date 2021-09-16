@@ -124,6 +124,19 @@ app.get("/sendNotif", function(req, res){
         },
         topic: req.query.topik
     }
+    if(req.query.intent != undefined){
+        message.data = {
+            intent: req.query.intent,
+            id: req.query.id
+        }
+    }
+    if(req.query.click != undefined){
+        message.android = {
+            notification: {
+                click_action: req.query.click
+            }
+        }
+    }
 
     admin.messaging().send(message)
     .then((response) => {
