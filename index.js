@@ -219,10 +219,10 @@ app.post("/verifyEmail", function(req, res){
       })
       request
         .then(result => {
-          console.log(result.body)
+          res.status(200).send(result.body);
         })
         .catch(err => {
-          console.log(err.statusCode)
+          res.status(400).send(err.statusCode);
         })
 });
 
