@@ -59,7 +59,8 @@ app.post('/trialUpload', function(req, res){
 });
 
 app.get("/", function(req, res){
-    res.render("login", {error: null});
+    // res.render("login", {error: null});
+    res.redirect("https://pawfriends-admin.herokuapp.com/dashboard");
 });
 
 app.post("/handlePayment", async function(req, res){
