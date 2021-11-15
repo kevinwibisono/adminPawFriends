@@ -32,13 +32,19 @@ const mailjet = require('node-mailjet').connect(
 
 const artikel = require("./routes/artikel");
 const penarikan = require("./routes/penarikan");
+const { Timestamp } = require('@google-cloud/firestore');
+const { totalmem } = require('os');
 const app = express();
 app.use(express.json());
 app.use(express.static("./uploads"));
 app.use(express.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
-
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
 
 
 app.post('/trialUpload', function(req, res){
@@ -76,12 +82,16 @@ app.post("/handlePayment", async function(req, res){
 
                 var pjDoc = await firestore.collection("pesanan_janjitemu").doc(id_pj).get();
                 var pesananjanjitemu = pjDoc._delegate._document.data.value.mapValue.fields;
+                var pembeli = pesananjanjitemu.email_pembeli.stringValue;
+                var topikPembeli = pembeli.substr(0, pembeli.indexOf('@'));
+                var penjual = pesananjanjitemu.email_penjual.stringValue;
+                var topikPenjual = penjual.substr(0, penjual.indexOf('@'));
                 let messageBuyer = {
                     notification: {
                         title: "Pembayaran Telah Terverifikasi",
                         body: "Pesananmu Telah Diteruskan Ke Penjual"
                     },
-                    topic: pesananjanjitemu.hp_pembeli.stringValue
+                    topic: topikPembeli
                 }
 
                 let messageSeller = {
@@ -89,16 +99,18 @@ app.post("/handlePayment", async function(req, res){
                         title: "Ada Pesanan Baru",
                         body: "kamu Mendapat Pesanan Baru"
                     },
-                    topic: pesananjanjitemu.hp_penjual.stringValue
+                    topic: topikPenjual
                 }
             
                 admin.messaging().send(messageBuyer);
                 
                 admin.messaging().send(messageSeller);
 
-
+                let tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
                 await firestore.collection("pesanan_janjitemu").doc(id_pj).set({
-                    status: 1
+                    status: 1,
+                    selesai_otomatis: tomorrow
                 }, {merge : true});
                 console.log(id_pj);
                 if(index == id_pjs.length -1){
