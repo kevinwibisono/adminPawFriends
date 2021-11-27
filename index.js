@@ -187,7 +187,7 @@ app.get("/dashboard", async function(req, res){
         var penarikan = saldoTarikDB._delegate._document.data.value.mapValue.fields;
         var newPenarikan = {};
         newPenarikan["nama"] = penarikan.nama.stringValue;
-        newPenarikan["jenis_rek"] = bankList[penarikan.jenis.integerValue];
+        newPenarikan["jenis_rek"] = bankList[penarikan.jenis_rek.integerValue];
         newPenarikan["tanggal"] = new Date(parseInt(penarikan.tanggal.timestampValue.seconds) * 1000).toISOString().substr(0,10);
         saldoTarikList.push(newPenarikan);
     });

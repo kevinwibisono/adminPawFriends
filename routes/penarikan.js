@@ -34,7 +34,7 @@ router.get("/listPenarikan", async function(req, res){
         var newPenarikan = {};
         newPenarikan["id"] = penarikan.key.path.segments[6];
         newPenarikan["nama"] = penarikanDetails.nama.stringValue;
-        newPenarikan["jenis_rek"] = bankList[penarikanDetails.jenis.integerValue];
+        newPenarikan["jenis_rek"] = bankList[penarikanDetails.jenis_rek.integerValue];
         newPenarikan["tanggal"] = new Date(parseInt(penarikanDetails.tanggal.timestampValue.seconds) * 1000).toISOString().substr(0,10);
         saldoTarikList.push(newPenarikan);
     });
@@ -73,13 +73,14 @@ router.post("/uploadBuktiTrf", async function(req, res){
             else{
                 var penarikanDoc = await firestore.collection("riwayat_saldo").doc(req.body.id).get();
                 var penarikan = penarikanDoc._delegate._document.data.value.mapValue.fields;
-
+                var penarik = penarikan.email_penarik.stringValue;
+                var topik = penarik.substr(0, penarik.indexOf('@'));
                 let message = {
                     notification: {
                         title: "Pengajuan Penarikan Saldo Telah Disetujui",
                         body: "Pengajuan Penarikan Saldomu Telah Disetujui Oleh Admin PawFriends"
                     },
-                    topic: penarikan.no_hp.stringValue
+                    topic: topik
                 }
             
                 admin.messaging().send(message);
