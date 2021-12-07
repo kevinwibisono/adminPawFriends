@@ -76,6 +76,18 @@ app.post("/handlePayment", async function(req, res){
             //jika ada pembayaran dengan id_payment tsb
             var payment = paymentDoc._delegate._document.data.value.mapValue.fields;
             var id_pjs = payment.id_pjs.stringValue.split("|");
+            var pembeli = payment.email_pembeli.stringValue;
+            var topikPembeli = pembeli.substr(0, pembeli.indexOf('@'));
+
+            let messageBuyer = {
+                notification: {
+                    title: "Pembayaran Telah Terverifikasi",
+                    body: "Pesananmu Telah Diteruskan Ke Penjual"
+                },
+                topic: topikPembeli
+            }
+
+            admin.messaging().send(messageBuyer);
 
             //temukan pesanan_janjitemu didalamnya dan update statusnya satu per satu
             for (let index = 0; index < id_pjs.length; index++) {
@@ -83,17 +95,9 @@ app.post("/handlePayment", async function(req, res){
 
                 var pjDoc = await firestore.collection("pesanan_janjitemu").doc(id_pj).get();
                 var pesananjanjitemu = pjDoc._delegate._document.data.value.mapValue.fields;
-                var pembeli = pesananjanjitemu.email_pembeli.stringValue;
-                var topikPembeli = pembeli.substr(0, pembeli.indexOf('@'));
+                
                 var penjual = pesananjanjitemu.email_penjual.stringValue;
                 var topikPenjual = penjual.substr(0, penjual.indexOf('@'));
-                let messageBuyer = {
-                    notification: {
-                        title: "Pembayaran Telah Terverifikasi",
-                        body: "Pesananmu Telah Diteruskan Ke Penjual"
-                    },
-                    topic: topikPembeli
-                }
 
                 let messageSeller = {
                     notification: {
@@ -103,8 +107,6 @@ app.post("/handlePayment", async function(req, res){
                     topic: topikPenjual
                 }
             
-                admin.messaging().send(messageBuyer);
-                
                 admin.messaging().send(messageSeller);
 
                 let tomorrow = new Date();
